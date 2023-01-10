@@ -1,18 +1,18 @@
 version: '3.5'
 
 services:
-  postgres:
-    container_name: postgres_container
+  postgres_scheduler:
+    container_name: postgres_scheduler
     image: postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      PGDATA: /data/postgres
+      PGDATA: /data/scheduler
     volumes:
-       - postgres:/data/postgres
+       - scheduler:/data/scheduler
     ports:
       - "5432:5432"
     restart: always
 
 volumes:
-    postgres:
+    scheduler:
