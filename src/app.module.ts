@@ -7,12 +7,14 @@ import { typeOrmConfig } from './database/typeOrm.config';
 import { configurationFunction } from './config/configuration';
 import { RegistrationModule } from './modules/registration/registration.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ load: [configurationFunction] }),
+    ConfigModule.forRoot({ load: [configurationFunction], isGlobal: true }),
     TypeOrmModule.forRoot(typeOrmConfig),
     RegistrationModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

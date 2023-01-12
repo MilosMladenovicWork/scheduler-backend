@@ -1,0 +1,8 @@
+GET http://localhost:3000/auth/login HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxMjM0NTYiLCJzdWIiOiI1NWU5NGE3ZC1hOWM5LTQyMDItYWNkZC0wZjhiMzI4YjkyNmIiLCJpYXQiOjE2NzM1NTMzOTcsImV4cCI6MTY3MzU1MzQ1N30.PYmwPb2H9AEZzfKuNCyxEejwll0Bf5Wsd6mXXRZfpZ8
+
+{
+    "email": "test123456@test.co",
+    "password": "Test123"
+}
