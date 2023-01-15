@@ -1,4 +1,5 @@
-import { Controller, Post, UseGuards, Request, Get } from '@nestjs/common';
+import { Controller, Post, UseGuards, Get } from '@nestjs/common';
+import { UserDecorator } from 'src/common/decorators/user.decorator';
 import User from 'src/database/entities/user.entity';
 import { JwtAuthGuard } from '../jwt-auth.guard';
 import { LocalAuthGuard } from '../local-auth.guard';
@@ -10,7 +11,7 @@ export class LoginController {
 
   @UseGuards(LocalAuthGuard)
   @Post()
-  async login(@Request() { user }: Request & { user: User }) {
+  async login(@UserDecorator() user: User) {
     return this.authService.login({
       userId: user.id,
       username: user.username,
@@ -19,7 +20,7 @@ export class LoginController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async profile(@Request() { user }: Request & { user: User }) {
+  async profile(@UserDecorator() user: User) {
     return user;
   }
 }

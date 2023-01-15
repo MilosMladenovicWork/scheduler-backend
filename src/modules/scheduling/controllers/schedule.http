@@ -1,0 +1,9 @@
+POST http://localhost:3000/schedule HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxMjM0NTYiLCJzdWIiOiI1NWU5NGE3ZC1hOWM5LTQyMDItYWNkZC0wZjhiMzI4YjkyNmIiLCJpYXQiOjE2NzM4MDQwNzgsImV4cCI6MTY3MzgzNDA3OH0.47S9xqs4SqUqz6_rAnEGRbQf3Z8lwK74WkjTXan5pBs
+
+{
+    "userIds": ["55e94a7d-a9c9-4202-acdd-0f8b328b926b"],
+    "scheduleStartDate": "2023-01-16T10:01:30.000Z",
+    "scheduleEndDate": "2023-01-16T10:01:32.000Z"
+}

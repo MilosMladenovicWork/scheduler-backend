@@ -8,6 +8,7 @@ import { configurationFunction } from './config/configuration';
 import { RegistrationModule } from './modules/registration/registration.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthModule } from './modules/auth/auth.module';
+import { SchedulingModule } from './modules/scheduling/scheduling.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AuthModule } from './modules/auth/auth.module';
     TypeOrmModule.forRoot(typeOrmConfig),
     RegistrationModule,
     AuthModule,
+    SchedulingModule,
   ],
   controllers: [AppController],
   providers: [
