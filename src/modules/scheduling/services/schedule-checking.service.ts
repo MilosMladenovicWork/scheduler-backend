@@ -14,16 +14,16 @@ export class ScheduleCheckingService {
   ) {}
 
   async checkIfApprovedScheduleForSpecificTimeFrameExists({
-    userId,
+    userIds,
     scheduleStartDate,
     scheduleEndDate,
   }: {
-    userId: string;
+    userIds: string[];
     scheduleStartDate: Date;
     scheduleEndDate: Date;
   }): Promise<void> {
     const schedule = await this.getApprovedScheduleForSpecificTimeFrame({
-      userId,
+      userIds,
       scheduleStartDate,
       scheduleEndDate,
     });
@@ -36,18 +36,18 @@ export class ScheduleCheckingService {
   }
 
   private async getApprovedScheduleForSpecificTimeFrame({
-    userId,
+    userIds,
     scheduleStartDate,
     scheduleEndDate,
   }: {
-    userId: string;
+    userIds: string[];
     scheduleStartDate: Date;
     scheduleEndDate: Date;
   }): Promise<Schedule | null> {
     const schedule = await this.scheduleRepository
       .createQueryBuilder('schedule')
       .leftJoin('schedule.scheduleParticipantUsers', 'scheduleParticipantUsers')
-      .andWhere('scheduleParticipantUsers.userId = :userId', { userId })
+      .andWhere('scheduleParticipantUsers.userId IN (:...userIds)', { userIds })
       .andWhere('scheduleParticipantUsers.status = :approvedScheduleStatus', {
         approvedScheduleStatus: ScheduleParticipantUserStatus.ACCEPTED,
       })

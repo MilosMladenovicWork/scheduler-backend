@@ -20,7 +20,7 @@ export class ScheduleService {
     { userIds, scheduleStartDate, scheduleEndDate }: ScheduleDto,
   ): Promise<Schedule> {
     await this.scheduleCheckingService.checkIfApprovedScheduleForSpecificTimeFrameExists(
-      { userId, scheduleStartDate, scheduleEndDate },
+      { userIds, scheduleStartDate, scheduleEndDate },
     );
 
     return await this.dataSource.transaction(async (manager) => {
