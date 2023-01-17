@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isNil } from 'lodash';
 import FriendRequest from 'src/database/entities/friend-request.entity';
@@ -12,24 +16,7 @@ export class FriendRequestCheckingService {
     private friendRequestRepository: Repository<FriendRequest>,
   ) {}
 
-  async checkIfFriendRequestAlreadyExists({
-    userId,
-    friendUserId,
-  }: {
-    userId: string;
-    friendUserId: string;
-  }): Promise<void> {
-    const friendRequest = await this.getExistingFriendRequest({
-      userId,
-      friendUserId,
-    });
-
-    if (!isNil(friendRequest)) {
-      throw new ConflictException('Friend request already exists.');
-    }
-  }
-
-  private async getExistingFriendRequest({
+  async getExistingFriendRequest({
     userId,
     friendUserId,
   }: {
@@ -98,6 +85,41 @@ export class FriendRequestCheckingService {
           );
         }),
       )
+      .getOne();
+
+    return friendRequest;
+  }
+
+  async checkIfFriendRequestByIdAndReceiverUserIdExists({
+    id,
+    userId,
+  }: {
+    id: string;
+    userId: string;
+  }): Promise<FriendRequest> {
+    const friendRequest = await this.getFriendRequestByIdAndReceiverUserId({
+      id,
+      userId,
+    });
+
+    if (isNil(friendRequest)) {
+      throw new NotFoundException('Friend request pending not found.');
+    }
+
+    return friendRequest;
+  }
+
+  private async getFriendRequestByIdAndReceiverUserId({
+    id,
+    userId,
+  }: {
+    id: string;
+    userId: string;
+  }): Promise<FriendRequest | null> {
+    const friendRequest = await this.friendRequestRepository
+      .createQueryBuilder('friendRequest')
+      .where('friendRequest.id = :id', { id })
+      .andWhere('friendRequest.receiverId = :userId', { userId })
       .getOne();
 
     return friendRequest;

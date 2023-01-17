@@ -1,0 +1,7 @@
+PATCH http://localhost:3000/friend-request/7cac943d-8520-4ee6-a170-569db82ae24b/response HTTP/1.1
+content-type: application/json
+Authorization: Bearer
+
+{
+    "status": "rejected"
+}

@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { isNil } from 'lodash';
 import FriendRequest from 'src/database/entities/friend-request.entity';
 import { UsernameCheckingService } from 'src/modules/username/services/username-checking.service';
 import { Repository } from 'typeorm';
@@ -28,21 +29,35 @@ export class FriendRequestSendingService {
         username,
       );
 
-    await this.friendRequestCheckingService.checkIfFriendRequestAlreadyExists({
-      userId,
-      friendUserId,
-    });
+    const friendRequest =
+      await this.friendRequestCheckingService.getExistingFriendRequest({
+        userId,
+        friendUserId,
+      });
 
-    const friendRequestEntity = await this.friendRequestRepository.create({
-      senderId: userId,
-      receiverId: friendUserId,
-      status: FriendRequestStatusEnum.PENDING,
-    });
+    if (isNil(friendRequest)) {
+      const newFriendRequestEntity = await this.friendRequestRepository.create({
+        senderId: userId,
+        receiverId: friendUserId,
+        status: FriendRequestStatusEnum.PENDING,
+      });
 
-    const friendRequest = await this.friendRequestRepository.save(
-      friendRequestEntity,
-    );
+      const newFriendRequest = await this.friendRequestRepository.save(
+        newFriendRequestEntity,
+      );
 
-    return friendRequest;
+      return newFriendRequest;
+    }
+
+    if (friendRequest.status === FriendRequestStatusEnum.REJECTED) {
+      const newFriendRequest = await this.friendRequestRepository.save({
+        id: friendRequest.id,
+        status: FriendRequestStatusEnum.PENDING,
+      });
+
+      return newFriendRequest;
+    }
+
+    throw new ConflictException('Friend request already exists.');
   }
 }
