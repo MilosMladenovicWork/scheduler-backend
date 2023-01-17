@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import ScheduleCreatorUser from 'src/database/entities/schedule-creator-user.entity';
 import ScheduleParticipantUser from 'src/database/entities/schedule-participant-user.entity';
 import Schedule from 'src/database/entities/schedule.entity';
+import { FriendRequestCheckingService } from 'src/modules/friend-requests/services/friend-request-checking.service';
 import { DataSource, EntityManager } from 'typeorm';
 import { ScheduleParticipantUserStatus } from '../constants/schedule-participant-user-status.enum';
 import { ScheduleDto } from '../dtos/schedule-request.dto';
@@ -13,12 +14,18 @@ export class ScheduleService {
   constructor(
     private dataSource: DataSource,
     private scheduleCheckingService: ScheduleCheckingService,
+    private friendRequestCheckingService: FriendRequestCheckingService,
   ) {}
 
   async schedule(
     userId: string,
     { userIds, scheduleStartDate, scheduleEndDate }: ScheduleDto,
   ): Promise<Schedule> {
+    await this.friendRequestCheckingService.checkIfFriendRequestsAreApproved({
+      userId,
+      otherUserIds: userIds,
+    });
+
     await this.scheduleCheckingService.checkIfApprovedScheduleForSpecificTimeFrameExists(
       { userIds, scheduleStartDate, scheduleEndDate },
     );

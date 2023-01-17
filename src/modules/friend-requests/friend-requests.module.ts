@@ -10,5 +10,6 @@ import { FriendRequestSendingService } from './services/friend-request-sending.s
   imports: [TypeOrmModule.forFeature([FriendRequest]), UsernameModule],
   controllers: [FriendRequestController],
   providers: [FriendRequestSendingService, FriendRequestCheckingService],
+  exports: [FriendRequestCheckingService],
 })
 export class FriendRequestsModule {}
