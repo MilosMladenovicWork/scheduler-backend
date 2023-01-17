@@ -9,6 +9,8 @@ import { RegistrationModule } from './modules/registration/registration.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthModule } from './modules/auth/auth.module';
 import { SchedulingModule } from './modules/scheduling/scheduling.module';
+import { UsernameModule } from './modules/username/username.module';
+import { FriendRequestsModule } from './modules/friend-requests/friend-requests.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { SchedulingModule } from './modules/scheduling/scheduling.module';
     RegistrationModule,
     AuthModule,
     SchedulingModule,
+    UsernameModule,
+    FriendRequestsModule,
   ],
   controllers: [AppController],
   providers: [
