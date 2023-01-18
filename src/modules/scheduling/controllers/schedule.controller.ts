@@ -12,7 +12,7 @@ import { UserDecorator } from '../../../common/decorators/user.decorator';
 import Schedule from 'src/database/entities/schedule.entity';
 import { JwtUser } from 'src/modules/auth/types/jwt-user.type';
 
-@Controller('schedule')
+@Controller('schedules')
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 

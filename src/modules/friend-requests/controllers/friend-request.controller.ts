@@ -17,7 +17,7 @@ import { FriendRequestRespondingService } from '../services/friend-request-respo
 import { RespondToFriendRequestDto } from '../dtos/respond-to-friend-request.dto';
 import { RespondToFriendRequestParamsDto } from '../dtos/respond-to-friend-request-params.dto';
 
-@Controller('friend-request')
+@Controller('friend-requests')
 export class FriendRequestController {
   constructor(
     private friendRequestSendingService: FriendRequestSendingService,
