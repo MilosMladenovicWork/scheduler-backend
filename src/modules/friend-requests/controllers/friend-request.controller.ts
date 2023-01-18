@@ -16,12 +16,16 @@ import FriendRequest from 'src/database/entities/friend-request.entity';
 import { FriendRequestRespondingService } from '../services/friend-request-responding.service';
 import { RespondToFriendRequestDto } from '../dtos/respond-to-friend-request.dto';
 import { RespondToFriendRequestParamsDto } from '../dtos/respond-to-friend-request-params.dto';
+import { UpdateApprovedFriendRequestParamsDto } from '../dtos/update-approved-friend-request-params.dto';
+import { UpdateApprovedFriendRequestDto } from '../dtos/update-approved-friend-request.dto';
+import { FriendRequestUpdatingService } from '../services/friend-request-updating.service';
 
 @Controller('friend-requests')
 export class FriendRequestController {
   constructor(
     private friendRequestSendingService: FriendRequestSendingService,
     private friendRequestRespondingService: FriendRequestRespondingService,
+    private friendRequestUpdatingService: FriendRequestUpdatingService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -48,6 +52,22 @@ export class FriendRequestController {
       userId: user.userId,
       respondToFriendRequestDto,
       respondToFriendRequestParamsDto,
+    });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('/:id')
+  updateApproved(
+    @Param(ValidationPipe)
+    updateApprovedFriendRequestParamsDto: UpdateApprovedFriendRequestParamsDto,
+    @Body(ValidationPipe)
+    updateApprovedFriendRequestDto: UpdateApprovedFriendRequestDto,
+    @UserDecorator() user: JwtUser,
+  ): Promise<FriendRequest> {
+    return this.friendRequestUpdatingService.updateApprovedFriendRequest({
+      userId: user.userId,
+      updateApprovedFriendRequestDto,
+      updateApprovedFriendRequestParamsDto,
     });
   }
 }

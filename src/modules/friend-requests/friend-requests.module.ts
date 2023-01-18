@@ -6,6 +6,7 @@ import { FriendRequestController } from './controllers/friend-request.controller
 import { FriendRequestCheckingService } from './services/friend-request-checking.service';
 import { FriendRequestRespondingService } from './services/friend-request-responding.service';
 import { FriendRequestSendingService } from './services/friend-request-sending.service';
+import { FriendRequestUpdatingService } from './services/friend-request-updating.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([FriendRequest]), UsernameModule],
@@ -14,6 +15,7 @@ import { FriendRequestSendingService } from './services/friend-request-sending.s
     FriendRequestSendingService,
     FriendRequestCheckingService,
     FriendRequestRespondingService,
+    FriendRequestUpdatingService,
   ],
   exports: [FriendRequestCheckingService],
 })

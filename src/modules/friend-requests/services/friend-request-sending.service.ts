@@ -52,6 +52,8 @@ export class FriendRequestSendingService {
     if (friendRequest.status === FriendRequestStatusEnum.REJECTED) {
       const newFriendRequest = await this.friendRequestRepository.save({
         id: friendRequest.id,
+        senderId: userId,
+        receiverId: friendUserId,
         status: FriendRequestStatusEnum.PENDING,
       });
 

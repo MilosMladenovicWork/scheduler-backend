@@ -103,7 +103,7 @@ export class FriendRequestCheckingService {
     });
 
     if (isNil(friendRequest)) {
-      throw new NotFoundException('Friend request pending not found.');
+      throw new NotFoundException('Friend request not found.');
     }
 
     return friendRequest;
@@ -120,6 +120,45 @@ export class FriendRequestCheckingService {
       .createQueryBuilder('friendRequest')
       .where('friendRequest.id = :id', { id })
       .andWhere('friendRequest.receiverId = :userId', { userId })
+      .getOne();
+
+    return friendRequest;
+  }
+
+  async checkIfFriendRequestByIdAndReceiverOrSenderUserIdExists({
+    id,
+    userId,
+  }: {
+    id: string;
+    userId: string;
+  }): Promise<FriendRequest> {
+    const friendRequest =
+      await this.getFriendRequestByIdAndReceiverOrSenderUserId({
+        id,
+        userId,
+      });
+
+    if (isNil(friendRequest)) {
+      throw new NotFoundException('Friend request not found.');
+    }
+
+    return friendRequest;
+  }
+
+  private async getFriendRequestByIdAndReceiverOrSenderUserId({
+    id,
+    userId,
+  }: {
+    id: string;
+    userId: string;
+  }): Promise<FriendRequest | null> {
+    const friendRequest = await this.friendRequestRepository
+      .createQueryBuilder('friendRequest')
+      .where('friendRequest.id = :id', { id })
+      .andWhere(
+        '(friendRequest.receiverId = :userId OR friendRequest.senderId = :userId)',
+        { userId },
+      )
       .getOne();
 
     return friendRequest;
