@@ -23,7 +23,7 @@ import { UpdateApprovedFriendRequestDto } from '../dtos/update-approved-friend-r
 import { FriendRequestUpdatingService } from '../services/friend-request-updating.service';
 import { GetFriendRequestsQueryDto } from '../dtos/get-friend-requests-query.dto';
 import { FriendRequestGettingService } from '../services/friend-request-getting.service';
-import { ArrayResponse } from 'src/common/dtos/response.dto';
+import { ArrayResponse, Response } from 'src/common/dtos/response.dto';
 
 @Controller('friend-requests')
 export class FriendRequestController {
@@ -36,45 +36,51 @@ export class FriendRequestController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  send(
+  async send(
     @Body(ValidationPipe) sendFriendRequestDto: SendFriendRequestDto,
     @UserDecorator() user: JwtUser,
-  ): Promise<FriendRequest> {
-    return this.friendRequestSendingService.sendFriendRequest({
-      userId: user.userId,
-      sendFriendRequestDto,
-    });
+  ): Promise<Response<FriendRequest>> {
+    return new Response(
+      await this.friendRequestSendingService.sendFriendRequest({
+        userId: user.userId,
+        sendFriendRequestDto,
+      }),
+    );
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch('/:id/response')
-  update(
+  async update(
     @Param(ValidationPipe)
     respondToFriendRequestParamsDto: RespondToFriendRequestParamsDto,
     @Body(ValidationPipe) respondToFriendRequestDto: RespondToFriendRequestDto,
     @UserDecorator() user: JwtUser,
-  ): Promise<FriendRequest> {
-    return this.friendRequestRespondingService.respondToFriendRequest({
-      userId: user.userId,
-      respondToFriendRequestDto,
-      respondToFriendRequestParamsDto,
-    });
+  ): Promise<Response<FriendRequest>> {
+    return new Response(
+      await this.friendRequestRespondingService.respondToFriendRequest({
+        userId: user.userId,
+        respondToFriendRequestDto,
+        respondToFriendRequestParamsDto,
+      }),
+    );
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch('/:id')
-  updateApproved(
+  async updateApproved(
     @Param(ValidationPipe)
     updateApprovedFriendRequestParamsDto: UpdateApprovedFriendRequestParamsDto,
     @Body(ValidationPipe)
     updateApprovedFriendRequestDto: UpdateApprovedFriendRequestDto,
     @UserDecorator() user: JwtUser,
-  ): Promise<FriendRequest> {
-    return this.friendRequestUpdatingService.updateApprovedFriendRequest({
-      userId: user.userId,
-      updateApprovedFriendRequestDto,
-      updateApprovedFriendRequestParamsDto,
-    });
+  ): Promise<Response<FriendRequest>> {
+    return new Response(
+      await this.friendRequestUpdatingService.updateApprovedFriendRequest({
+        userId: user.userId,
+        updateApprovedFriendRequestDto,
+        updateApprovedFriendRequestParamsDto,
+      }),
+    );
   }
 
   @UseGuards(JwtAuthGuard)
