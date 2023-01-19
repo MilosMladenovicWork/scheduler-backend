@@ -1,6 +1,7 @@
 import { FriendRequestStatusEnum } from '../../modules/friend-requests/types/friend-request-status.enum';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -16,6 +17,9 @@ class FriendRequest {
 
   @Column()
   status: FriendRequestStatusEnum;
+
+  @CreateDateColumn()
+  createdAt: Date;
 
   @Column()
   senderId: string;

@@ -29,6 +29,7 @@ export class FriendRequestGettingService {
       .andWhere('friendRequest.status = :pendingFriendRequestStatus', {
         pendingFriendRequestStatus: FriendRequestStatusEnum.PENDING,
       })
+      .orderBy('friendRequest.createdAt', 'DESC')
       .take(take)
       .skip(skip)
       .getManyAndCount();
