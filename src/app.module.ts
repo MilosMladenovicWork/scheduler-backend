@@ -11,6 +11,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { SchedulingModule } from './modules/scheduling/scheduling.module';
 import { UsernameModule } from './modules/username/username.module';
 import { FriendRequestsModule } from './modules/friend-requests/friend-requests.module';
+import { FriendsModule } from './modules/friends/friends.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { FriendRequestsModule } from './modules/friend-requests/friend-requests.
     SchedulingModule,
     UsernameModule,
     FriendRequestsModule,
+    FriendsModule,
   ],
   controllers: [AppController],
   providers: [
