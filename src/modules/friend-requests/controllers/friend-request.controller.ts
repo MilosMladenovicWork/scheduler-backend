@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
@@ -19,6 +21,9 @@ import { RespondToFriendRequestParamsDto } from '../dtos/respond-to-friend-reque
 import { UpdateApprovedFriendRequestParamsDto } from '../dtos/update-approved-friend-request-params.dto';
 import { UpdateApprovedFriendRequestDto } from '../dtos/update-approved-friend-request.dto';
 import { FriendRequestUpdatingService } from '../services/friend-request-updating.service';
+import { GetFriendRequestsQueryDto } from '../dtos/get-friend-requests-query.dto';
+import { FriendRequestGettingService } from '../services/friend-request-getting.service';
+import { ArrayResponse } from 'src/common/dtos/response.dto';
 
 @Controller('friend-requests')
 export class FriendRequestController {
@@ -26,6 +31,7 @@ export class FriendRequestController {
     private friendRequestSendingService: FriendRequestSendingService,
     private friendRequestRespondingService: FriendRequestRespondingService,
     private friendRequestUpdatingService: FriendRequestUpdatingService,
+    private friendRequestGettingService: FriendRequestGettingService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -68,6 +74,24 @@ export class FriendRequestController {
       userId: user.userId,
       updateApprovedFriendRequestDto,
       updateApprovedFriendRequestParamsDto,
+    });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async getAll(
+    @Query(ValidationPipe)
+    getFriendRequestsQueryDto: GetFriendRequestsQueryDto,
+    @UserDecorator() user: JwtUser,
+  ): Promise<ArrayResponse<FriendRequest[]>> {
+    const paginatedRequests =
+      await this.friendRequestGettingService.getAllPending({
+        userId: user.userId,
+        getFriendRequestsQueryDto,
+      });
+
+    return new ArrayResponse(paginatedRequests.items, {
+      pagination: { count: paginatedRequests.count },
     });
   }
 }
