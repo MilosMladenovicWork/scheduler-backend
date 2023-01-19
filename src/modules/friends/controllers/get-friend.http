@@ -1,0 +1,3 @@
+GET http://localhost:3000/friends/59ba8083-fd42-4065-92e0-b123331885f3 HTTP/1.1
+content-type: application/json
+Authorization: Bearer
