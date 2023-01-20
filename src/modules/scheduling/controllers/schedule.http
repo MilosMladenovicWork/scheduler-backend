@@ -1,10 +1,10 @@
 POST http://localhost:3000/schedules HTTP/1.1
 content-type: application/json
-Authorization: Bearer 
+Authorization: Bearer
 
 {
-    "userIds": ["55e94a7d-a9c9-4202-acdd-0f8b328b926b"],
-    "scheduleStartDate": "2023-01-16T10:01:30.000Z",
-    "scheduleEndDate": "2023-01-16T10:01:32.000Z"
-
+    "userIds": ["bcea577b-2035-44a9-90b8-15d2098927e4"],
+    "scheduleStartDate": "2023-01-18T10:01:30.000Z",
+    "scheduleEndDate": "2023-01-18T10:01:32.000Z",
+    "title": "Schedule title"
 }

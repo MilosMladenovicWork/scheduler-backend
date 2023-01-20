@@ -14,7 +14,7 @@ export class LoginController {
   @Post()
   async login(@UserDecorator() user: User) {
     return new Response(
-      this.authService.login({
+      await this.authService.login({
         userId: user.id,
         username: user.username,
       }),

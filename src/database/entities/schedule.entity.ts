@@ -16,6 +16,12 @@ class Schedule {
   @Column()
   endDate: Date;
 
+  @Column()
+  title: string;
+
+  @Column({ nullable: true })
+  description: string;
+
   @OneToMany(
     () => ScheduleCreatorUser,
     (scheduleCreatorUser) => scheduleCreatorUser.schedule,

@@ -19,7 +19,13 @@ export class ScheduleService {
 
   async schedule(
     userId: string,
-    { userIds, scheduleStartDate, scheduleEndDate }: ScheduleDto,
+    {
+      userIds,
+      scheduleStartDate,
+      scheduleEndDate,
+      title,
+      description,
+    }: ScheduleDto,
   ): Promise<Schedule> {
     await this.friendRequestCheckingService.checkIfFriendRequestsAreApproved({
       userId,
@@ -38,6 +44,8 @@ export class ScheduleService {
         ),
         startDate: scheduleStartDate,
         endDate: scheduleEndDate,
+        title,
+        description,
       });
 
       const schedule = await manager

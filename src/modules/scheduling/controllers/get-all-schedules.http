@@ -1,0 +1,3 @@
+GET http://localhost:3000/schedules?from=2023-01-15T10:01:30.000Z&to=2023-01-19T10:01:32.000Z&userIds[]=bcea577b-2035-44a9-90b8-15d2098927e4&userIds[]=bcea577b-2035-44a9-90b8-15d2098927e5 HTTP/1.1
+content-type: application/json
+Authorization: Bearer

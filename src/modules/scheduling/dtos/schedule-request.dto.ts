@@ -1,5 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsUUID, IsDate } from 'class-validator';
+import {
+  IsUUID,
+  IsDate,
+  IsString,
+  IsOptional,
+  IsNotEmpty,
+} from 'class-validator';
 
 export class ScheduleDto {
   @IsUUID('all', { each: true })
@@ -13,4 +19,12 @@ export class ScheduleDto {
   @Type(() => Date)
   // TODO: add validation for having greater end date than start date
   scheduleEndDate: Date;
+
+  @IsString()
+  @IsNotEmpty()
+  title: string;
+
+  @IsString()
+  @IsOptional()
+  description: string;
 }

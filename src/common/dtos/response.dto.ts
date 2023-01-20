@@ -13,14 +13,18 @@ export class ArrayResponse<T extends ResponseData> {
   data: T | null = null;
   pagination: ResponsePagination | undefined = undefined;
 
-  constructor(data: T, { pagination }: { pagination?: ResponsePagination }) {
+  constructor(data: T, otherData?: { pagination?: ResponsePagination }) {
     this.data = data;
 
-    if (!isNil(pagination)) {
-      const { count } = pagination;
-      this.pagination = {
-        count,
-      };
+    if (!isNil(otherData)) {
+      const { pagination } = otherData;
+
+      if (!isNil(pagination)) {
+        const { count } = pagination;
+        this.pagination = {
+          count,
+        };
+      }
     }
   }
 }
