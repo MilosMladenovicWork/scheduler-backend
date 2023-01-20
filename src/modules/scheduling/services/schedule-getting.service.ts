@@ -46,7 +46,10 @@ export class ScheduleGettingService {
           'schedule.scheduleParticipantUsers',
           'scheduleParticipantUsers',
         )
-        .addSelect('scheduleParticipantUsers.userId')
+        .addSelect([
+          'scheduleParticipantUsers.userId',
+          'scheduleParticipantUsers.status',
+        ])
         .where('schedule.startDate >= :from', { from })
         .andWhere('schedule.startDate < :to', { to })
         .andWhere(
