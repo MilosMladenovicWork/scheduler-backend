@@ -1,0 +1,7 @@
+PATCH http://localhost:3000/schedules/63ba262d-c837-4757-9d81-052a09d22b2e/participation HTTP/1.1
+content-type: application/json
+Authorization: Bearer
+
+{
+    "status": "accepted"
+}

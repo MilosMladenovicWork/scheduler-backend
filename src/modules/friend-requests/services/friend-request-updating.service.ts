@@ -23,7 +23,6 @@ export class FriendRequestUpdatingService {
     updateApprovedFriendRequestDto: UpdateApprovedFriendRequestDto;
     updateApprovedFriendRequestParamsDto: UpdateApprovedFriendRequestParamsDto;
   }): Promise<FriendRequest> {
-    console.log(id, userId);
     const friendRequest =
       await this.friendRequestCheckingService.checkIfFriendRequestByIdAndReceiverOrSenderUserIdExists(
         { id, userId },

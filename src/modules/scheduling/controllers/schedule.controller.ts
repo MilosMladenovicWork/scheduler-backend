@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -16,12 +18,17 @@ import { JwtUser } from 'src/modules/auth/types/jwt-user.type';
 import { ArrayResponse, Response } from 'src/common/dtos/response.dto';
 import { GetSchedulesQueryDto } from '../dtos/get-schedules-query.dto';
 import { ScheduleGettingService } from '../services/schedule-getting.service';
+import ScheduleParticipantUser from 'src/database/entities/schedule-participant-user.entity';
+import { ScheduleParticipationUpdateService } from '../services/schedule-participation-update.service';
+import { UpdateScheduleParticipationParamsDto } from '../dtos/update-schedule-participation-params.dto';
+import { UpdateScheduleParticipationDto } from '../dtos/update-schedule-participation.dto';
 
 @Controller('schedules')
 export class ScheduleController {
   constructor(
     private readonly scheduleService: ScheduleService,
     private readonly scheduleGettingService: ScheduleGettingService,
+    private readonly scheduleParticipationUpdateService: ScheduleParticipationUpdateService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -46,6 +53,26 @@ export class ScheduleController {
       await this.scheduleGettingService.getAll(
         user.userId,
         getSchedulesQueryDto,
+      ),
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('/:id/participation')
+  async updateApproved(
+    @Param(ValidationPipe)
+    updateScheduleParticipationParamsDto: UpdateScheduleParticipationParamsDto,
+    @Body(ValidationPipe)
+    updateScheduleParticipationDto: UpdateScheduleParticipationDto,
+    @UserDecorator() user: JwtUser,
+  ): Promise<Response<ScheduleParticipantUser>> {
+    return new Response(
+      await this.scheduleParticipationUpdateService.updateScheduleParticipation(
+        {
+          userId: user.userId,
+          updateScheduleParticipationDto,
+          updateScheduleParticipationParamsDto,
+        },
       ),
     );
   }
