@@ -36,6 +36,8 @@ export class FriendGettingService {
         'receivedFriendRequests.senderId = :userId',
         { userId },
       )
+      .addSelect('sentFriendRequests.id')
+      .addSelect('receivedFriendRequests.id')
       .where('user.id != :userId', { userId })
       .andWhere(
         '(sentFriendRequests.status = :approvedFriendRequestStatus OR receivedFriendRequests.status = :approvedFriendRequestStatus)',
