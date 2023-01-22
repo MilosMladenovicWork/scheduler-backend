@@ -119,7 +119,10 @@ export class FriendRequestCheckingService {
     const friendRequest = await this.friendRequestRepository
       .createQueryBuilder('friendRequest')
       .where('friendRequest.id = :id', { id })
-      .andWhere('friendRequest.receiverId = :userId', { userId })
+      .andWhere(
+        '(friendRequest.receiverId = :userId OR (friendRequest.senderId = :userId AND friendRequest.status = :pendingFriendRequestStatus))',
+        { userId, pendingFriendRequestStatus: FriendRequestStatusEnum.PENDING },
+      )
       .getOne();
 
     return friendRequest;
