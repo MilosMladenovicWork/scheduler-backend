@@ -8,6 +8,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       PGDATA: /data/scheduler
+      TZ: 'ETC/UTC'
+      PGTZ: 'ETC/UTC'
     volumes:
        - scheduler:/data/scheduler
     ports:
