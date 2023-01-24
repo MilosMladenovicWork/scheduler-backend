@@ -70,10 +70,9 @@ export class ScheduleGettingService {
         )
         .where('schedule.startDate >= :from', { from })
         .andWhere('schedule.startDate < :to', { to })
-        .andWhere(
-          '(scheduleParticipantUsers.userId = :currentUserId OR scheduleCreatorUsers.userId = :currentUserId)',
-          { currentUserId },
-        )
+        .andWhere('scheduleParticipantUsers.userId = :currentUserId', {
+          currentUserId,
+        })
         .andWhere('scheduleParticipantUsers.status IN (:...scheduleStatuses)', {
           scheduleStatuses: [
             ScheduleParticipantUserStatus.PENDING,
