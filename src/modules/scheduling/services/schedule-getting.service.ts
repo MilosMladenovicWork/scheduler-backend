@@ -24,37 +24,55 @@ export class ScheduleGettingService {
       otherUserIds: userIds,
     });
 
+    const currentUserSchedules = await this.getCurrentUserSchedules({
+      from,
+      to,
+      currentUserId: userId,
+      userIds,
+    });
+
     const otherUserIds = userIds.filter((queryUserId) => queryUserId != userId);
 
-    const shouldGetCurrentUserSchedules = userIds.length > otherUserIds.length;
+    const otherUserSchedules = await this.getOtherUserSchedules({
+      from,
+      to,
+      userId,
+      otherUserIds,
+    });
+
+    return [...currentUserSchedules, ...otherUserSchedules];
+  }
+
+  async getCurrentUserSchedules({
+    from,
+    to,
+    userIds,
+    currentUserId,
+  }: {
+    from: Date;
+    to: Date;
+    userIds: string[];
+    currentUserId: string;
+  }) {
+    const shouldGetCurrentUserSchedules = userIds.some(
+      (userId) => userId === currentUserId,
+    );
 
     let currentUserSchedules: Schedule[] = [];
 
     if (shouldGetCurrentUserSchedules) {
-      currentUserSchedules = await this.scheduleRepository
+      const currentUserSchedulesWithIds = await this.scheduleRepository
         .createQueryBuilder('schedule')
-        .select([
-          'schedule.id',
-          'schedule.startDate',
-          'schedule.endDate',
-          'schedule.title',
-          'schedule.description',
-        ])
         .leftJoin('schedule.scheduleCreatorUsers', 'scheduleCreatorUsers')
-        .addSelect('scheduleCreatorUsers.userId')
         .leftJoin(
           'schedule.scheduleParticipantUsers',
           'scheduleParticipantUsers',
         )
-        .addSelect([
-          'scheduleParticipantUsers.userId',
-          'scheduleParticipantUsers.status',
-        ])
         .where('schedule.startDate >= :from', { from })
         .andWhere('schedule.startDate < :to', { to })
         .andWhere(
-          '(scheduleParticipantUsers.userId = :userId OR scheduleCreatorUsers.userId = :userId)',
-          { userId },
+          '(scheduleParticipantUsers.userId = :currentUserId OR scheduleCreatorUsers.userId = :currentUserId)',
+          { currentUserId },
         )
         .andWhere('scheduleParticipantUsers.status IN (:...scheduleStatuses)', {
           scheduleStatuses: [
@@ -63,14 +81,52 @@ export class ScheduleGettingService {
           ],
         })
         .getMany();
-    }
 
+      if (!isEmpty(currentUserSchedulesWithIds)) {
+        currentUserSchedules = await this.scheduleRepository
+          .createQueryBuilder('schedule')
+          .select([
+            'schedule.id',
+            'schedule.startDate',
+            'schedule.endDate',
+            'schedule.title',
+            'schedule.description',
+          ])
+          .leftJoin('schedule.scheduleCreatorUsers', 'scheduleCreatorUsers')
+          .addSelect('scheduleCreatorUsers.userId')
+          .leftJoin(
+            'schedule.scheduleParticipantUsers',
+            'scheduleParticipantUsers',
+          )
+          .addSelect([
+            'scheduleParticipantUsers.userId',
+            'scheduleParticipantUsers.status',
+          ])
+          .where('schedule.id IN (:...scheduleIds)', {
+            scheduleIds: currentUserSchedulesWithIds.map(({ id }) => id),
+          })
+          .getMany();
+      }
+    }
+    return currentUserSchedules;
+  }
+
+  async getOtherUserSchedules({
+    from,
+    to,
+    userId,
+    otherUserIds,
+  }: {
+    from: Date;
+    to: Date;
+    userId: string;
+    otherUserIds: string[];
+  }) {
     let otherUserSchedules: Schedule[] = [];
 
     if (!isEmpty(otherUserIds)) {
-      otherUserSchedules = await this.scheduleRepository
+      const otherSchedulesWithIds = await this.scheduleRepository
         .createQueryBuilder('schedule')
-        .select(['schedule.id', 'schedule.startDate', 'schedule.endDate'])
         .leftJoin('schedule.scheduleCreatorUsers', 'scheduleCreatorUsers')
         .leftJoin(
           'schedule.scheduleParticipantUsers',
@@ -86,12 +142,37 @@ export class ScheduleGettingService {
           '(scheduleParticipantUsers.userId IN (:...userIds) OR scheduleCreatorUsers.userId IN (:...userIds))',
           { userIds: otherUserIds },
         )
+        .andWhere(
+          `NOT EXISTS (SELECT * FROM "schedule_participant_user" spu LEFT JOIN "schedule" s ON spu."scheduleId" = s."id" WHERE spu."userId" = :userId AND s."id" = schedule.id AND spu."status" IN (:...currentUserParticipationStatuses))`,
+          {
+            userId,
+            currentUserParticipationStatuses: [
+              ScheduleParticipantUserStatus.PENDING,
+              ScheduleParticipantUserStatus.ACCEPTED,
+            ],
+          },
+        )
         .andWhere('scheduleParticipantUsers.status = :acceptedScheduleStatus', {
           acceptedScheduleStatus: ScheduleParticipantUserStatus.ACCEPTED,
         })
         .getMany();
+
+      if (!isEmpty(otherSchedulesWithIds)) {
+        otherUserSchedules = await this.scheduleRepository
+          .createQueryBuilder('schedule')
+          .select(['schedule.id', 'schedule.startDate', 'schedule.endDate'])
+          .leftJoin('schedule.scheduleCreatorUsers', 'scheduleCreatorUsers')
+          .leftJoin(
+            'schedule.scheduleParticipantUsers',
+            'scheduleParticipantUsers',
+          )
+          .where('schedule.id IN (:...scheduleIds)', {
+            scheduleIds: otherSchedulesWithIds.map(({ id }) => id),
+          })
+          .getMany();
+      }
     }
 
-    return [...currentUserSchedules, ...otherUserSchedules];
+    return otherUserSchedules;
   }
 }
