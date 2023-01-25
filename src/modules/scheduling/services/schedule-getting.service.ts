@@ -134,7 +134,7 @@ export class ScheduleGettingService {
         .where('schedule.startDate >= :from', { from })
         .andWhere('schedule.startDate < :to', { to })
         .andWhere(
-          '(scheduleParticipantUsers.userId != :userId AND scheduleCreatorUsers.userId != :userId)',
+          '(scheduleParticipantUsers.userId != :userId OR scheduleCreatorUsers.userId != :userId)',
           { userId },
         )
         .andWhere(
