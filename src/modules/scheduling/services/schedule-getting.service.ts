@@ -24,6 +24,12 @@ export class ScheduleGettingService {
       otherUserIds: userIds,
     });
 
+    await this.scheduleRepository
+      .createQueryBuilder('schedule')
+      .delete()
+      .where("endDate + INTERVAL  '2 months' < now()")
+      .execute();
+
     const currentUserSchedules = await this.getCurrentUserSchedules({
       from,
       to,
