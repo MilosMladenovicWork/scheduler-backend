@@ -36,9 +36,7 @@ export class ScheduleCheckingService {
     });
 
     if (!isNil(schedule)) {
-      throw new ConflictException(
-        `Approved schedule with id: ${schedule.id} already exists.`,
-      );
+      throw new ConflictException(`Approved schedule  already exists.`);
     }
   }
 
