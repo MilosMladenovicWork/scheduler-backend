@@ -16,7 +16,9 @@ class ScheduleCreatorUser {
   @Column()
   scheduleId: string;
 
-  @ManyToOne(() => Schedule, (schedule) => schedule.scheduleCreatorUsers)
+  @ManyToOne(() => Schedule, (schedule) => schedule.scheduleCreatorUsers, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'scheduleId' })
   schedule: Schedule;
 
